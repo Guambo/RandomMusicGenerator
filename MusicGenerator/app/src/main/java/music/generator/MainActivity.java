@@ -23,7 +23,9 @@ public class MainActivity extends AppCompatActivity {
     private Button mButton;
     private TextView tv;
     private int MAX_INPUTS = 3;
-    private int custom_input[];
+    private int numNotes;
+    private String key;
+    private String filename;
     private File midiFile;
 
     private Sequencer sequencer;
@@ -49,19 +51,19 @@ public class MainActivity extends AppCompatActivity {
                 mEdit[1] = findViewById(R.id.editText2);
                 mEdit[2] = findViewById(R.id.editText3);
 
-                custom_input = new int[MAX_INPUTS];
-                for(int i = 0; i < MAX_INPUTS; i++) {
-                    custom_input[i] = Integer.valueOf(mEdit[i].getText().toString());
-                }
+                numNotes = Integer.valueOf(mEdit[0].getText().toString());
+                key = mEdit[1].getText().toString();
+                filename = mEdit[2].getText().toString() + ".mid";
+
                 tv = findViewById(R.id.textView);
-                tv.setText("Number of Notes: " + custom_input[0] +
-                        "\nLorum: " + custom_input[1] +
-                        "\nIpsum: " + custom_input[2]);
+                tv.setText("Number of Notes: " + numNotes +
+                        "\nKey: " + key +
+                        "\nGenerated file \"MyFiles/Internal Storage/Download/" + filename + "\"");
 
                 // generate_music(custom_inputs[0], etc...);
                 // Need to guard against bad input
                 // Also may be a good idea to create a new thread and have that thread run the setupAndPlay function
-                setupAndPlay(custom_input[0]);
+                setupAndPlay(numNotes);
             }
         });
     }
@@ -70,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             sequencer = MidiSystem.getSequencer();
             sequencer.open();
-            midiFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "test.mid");
+            midiFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), filename);
 
             sequence = new Sequence(Sequence.PPQ, 4);
 
