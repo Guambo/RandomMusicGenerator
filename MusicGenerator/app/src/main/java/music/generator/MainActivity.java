@@ -22,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
     private int MAX_INPUTS = 3;
     private int custom_input[];
 
+    public Sequencer sequencer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,17 +43,76 @@ public class MainActivity extends AppCompatActivity {
                 mEdit[1] = findViewById(R.id.editText2);
                 mEdit[2] = findViewById(R.id.editText3);
 
+                custom_input = new int[MAX_INPUTS];
                 for(int i = 0; i < MAX_INPUTS; i++) {
-                    //custom_input[i] = Integer.valueOf(mEdit[i].getText());
+                    custom_input[i] = Integer.valueOf(mEdit[i].getText().toString());
                 }
                 tv = findViewById(R.id.textView);
-                tv.setText("Number of Notes: " + mEdit[0].getText() +
-                        "\nLorum: " + mEdit[1].getText() +
-                        "\nIpsum: " + mEdit[2].getText());
+                tv.setText("Number of Notes: " + custom_input[0] +
+                        "\nLorum: " + custom_input[1] +
+                        "\nIpsum: " + custom_input[2]);
 
                 // generate_music(custom_inputs[0], etc...);
+                // Need to guard against bad input
+                // Also may be a good idea to create a new thread and have that thread run the setupAndPlay function
+                setupAndPlay(custom_input[0]);
             }
         });
+    }
+
+    public void setupAndPlay(int numNotes) {
+        try {
+            sequencer = MidiSystem.getSequencer();
+            sequencer.open();
+
+            Sequence sequence = new Sequence(Sequence.PPQ, 4);
+
+            Track track = sequence.createTrack();
+
+            /* The following block is what populates the track with notes.
+               This is what we will replace with our randomization and theory logic!
+               ੭•̀ω•́)੭̸*✩⁺˚
+             */
+            for (int i = 0; i < (4 * numNotes) + 5; i += 4) {
+                // note on
+                track.add(makeEvent(144, 1, i, 100, i));
+
+                // note off
+                track.add(makeEvent(128, 1, i, 100, i + 2));
+            }
+
+            sequencer.setSequence(sequence);
+            sequencer.setTempoInBPM(220);
+            sequencer.start();
+
+//            while (sequencer.isRunning()) {
+//                if (!sequencer.isRunning()) {
+//                    sequencer.close();
+//                    //System.exit(1);
+//                    break;
+//                }
+//            }
+            while(sequencer.isRunning()) {
+                ;
+            }
+            sequencer.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public MidiEvent makeEvent(int command, int channel, int note, int velocity, int tick) {
+        MidiEvent event = null;
+
+        try {
+            ShortMessage a = new ShortMessage();
+            a.setMessage(command, channel, note, velocity);
+            event = new MidiEvent(a, tick);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        return event;
     }
 
    // public void generate_music(.....) {
