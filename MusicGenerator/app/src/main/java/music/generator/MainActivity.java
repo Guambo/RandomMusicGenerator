@@ -92,13 +92,14 @@ public class MainActivity extends AppCompatActivity {
                This is what we will replace with our randomization and theory logic!
                ੭•̀ω•́)੭̸*✩⁺˚
              */
-            for (int i = 0; i < (4 * numNotes) + 5; i += 4) {
-                // note on
-                track.add(makeEvent(144, 1, i, 100, i));
-
-                // note off
-                track.add(makeEvent(128, 1, i, 100, i + 2));
-            }
+            generate_music();
+//            for (int i = 0; i < (4 * numNotes) + 5; i += 4) {
+//                // note on
+//                track.add(makeEvent(144, 1, i, 100, i));
+//
+//                // note off
+//                track.add(makeEvent(128, 1, i, 100, i + 2));
+//            }
 
             sequencer.setSequence(sequence);
             sequencer.setTempoInBPM(bpm);
@@ -133,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
         int key = (int) Math.random()*11;
         int tempo = (int) Math.random()*60 + 100;
         int upperBound = 5;
-        int lowerBound =5;
+        int lowerBound = 5;
         int[][] chords = {
                 {0, 4, 7},
                 {2, 5, 9},
@@ -162,17 +163,17 @@ public class MainActivity extends AppCompatActivity {
         int [] cRhythm = rhythm(barR, 50);
         int [] offRhythm = rhythm(barR, 10);
         int [] bassNotes;
-        for (int i = 0; i < barR; i ++) {
+        for (int i = 0; i < numOfChords; i ++) {
 
             // note on
-            bassNotes = generateSNotes(lowerBound, upperBound, barR, key, chordProg[i] , (int) Math.random()*3);
+            bassNotes = generateNotes(lowerBound, upperBound, barR, key, chordProg[i] , (int) Math.random()*3);
             for(int j = 0; j<barR;j++){
                 if(bassRhythm[j]==1)
                 {
-                    track.add(makeEvent(144, 1, i, 100, i * 4 + j * 4));
+                    track.add(makeEvent(144, 1, bassNotes[j], 100, i * 4 + j * 4));
                 }
                 else{
-                    track.add(makeEvent(128, 1, i, 100, i * 4 + j * 4));
+                    track.add(makeEvent(128, 1, bassNotes[j], 100, i * 4 + j * 4));
                 }
                 //track.add(makeEvent(144, 1, i, 100, i));
                 //track.add(makeEvent(144, 1, i, 100, i));
@@ -183,14 +184,16 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-    int[] generateSNotes(int lowerBound, int upperBound, int totalNotes, int key, int[] chord, int degree) {
+
+    int[] generateNotes(int lowerBound, int upperBound, int totalNotes, int key, int[] chord, int degree) {
 
         int[] ret = new int[totalNotes];
         for(int i = 0; i < totalNotes; i++) {
-            i = chord[degree] + 12 * rand.nextInt(upperBound) + lowerBound;
+            ret[i] = chord[degree] + 12*(rand.nextInt(upperBound) + lowerBound);
         }
         return ret;
     }
+
     public int[] rhythm(int rLength, int percentage)//makes a rhythm for a certain part. rLength is the bar length, percentage is the chance for a higher frequency of notes
     {
         int[] retval = new int[rLength];
