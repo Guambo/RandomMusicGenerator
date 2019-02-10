@@ -16,7 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import jp.kshoji.javax.sound.midi.*;
 import java.io.File;
-import java.util.Vector;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     // Fields
@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private String key;
     private String filename;
     private File midiFile;
-
+    private Random rand = new Random();
     private Sequencer sequencer;
     private Sequence sequence;
     private Track track;
@@ -117,11 +117,12 @@ public class MainActivity extends AppCompatActivity {
         return event;
     }
     public void generate_music() {
-        //int[] numOfChords = new int[(int)((Math.random()*12) - 2)];
         int barR = ((int) Math.random() * 8) + 2;
-        int[] numOfChords = new int[(int)((Math.random()*12) - 2)];
+        int numOfChords = (int)((Math.random()*12) - 2);
         int key = (int) Math.random()*11;
         int tempo = (int) Math.random()*60 + 100;
+        int upperBound = 5;
+        int lowerBound =5;
         int[][] chords = {
                 {0, 4, 7},
                 {2, 5, 9},
@@ -133,17 +134,60 @@ public class MainActivity extends AppCompatActivity {
                 {9, 0, 4},
                 {11, 2, 5}
         };
+        int[][] seventh = {
+                {0, 4, 7, 11},
+                {2, 5, 9, 0},
+                {4, 7, 11, 2},
+                {5, 9, 0, 4},
+                {7, 11, 2, 6},
+                {9, 0, 4, 7}
+        };
+        int[][] chordProg = new int[numOfChords][4];
+        for(int i = 0; i < numOfChords ; i++)
+        {
+            chordProg[i] = seventh[(int) Math.random()*seventh.length];
+        }
+        int [] bassRhythm = rhythm(barR, 90);
+        int [] cRhythm = rhythm(barR, 50);
+        int [] offRhythm = rhythm(barR, 10);
+        int [] bassNotes;
+        for (int i = 0; i < barR; i ++) {
 
+            // note on
+            bassNotes = generateSNotes(lowerBound, upperBound, barR, key, chordProg[i] , (int) Math.random()*3);
+            for(int j = 0; j<barR;j++){
+                if(bassRhythm[j]==1)
+                {
+                    track.add(makeEvent(144, 1, i, 100, i * 4 + j * 4));
+                }
+                else{
+                    track.add(makeEvent(128, 1, i, 100, i * 4 + j * 4));
+                }
+                //track.add(makeEvent(144, 1, i, 100, i));
+                //track.add(makeEvent(144, 1, i, 100, i));
+            }
 
+            // note off
+            //track.add(makeEvent(128, 1, i, 100, i + 2));
+        }
 
+    }
+    int[] generateSNotes(int lowerBound, int upperBound, int totalNotes, int key, int[] chord, int degree) {
+
+        int[] ret = new int[totalNotes];
+        for(int i = 0; i < totalNotes; i++) {
+            i = chord[degree] + 12 * rand.nextInt(upperBound) + lowerBound;
+        }
+        return ret;
     }
     public int[] rhythm(int rLength, int percentage)//makes a rhythm for a certain part. rLength is the bar length, percentage is the chance for a higher frequency of notes
     {
         int[] retval = new int[rLength];
         for(int i = 0; i < rLength; i++) {
-            if (Math.random() * 100 > percentage) {
+            if (Math.random() * 100 < percentage) {
                 retval[i] = 1;
             }
         }
+        return retval;
     }
 }
