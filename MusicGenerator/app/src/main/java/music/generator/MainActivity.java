@@ -16,7 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.net.Uri;
+import android.app.DownloadManager;
 import android.content.Intent;
 
 import jp.kshoji.javax.sound.midi.*;
@@ -94,7 +94,6 @@ public class MainActivity extends AppCompatActivity {
             track = sequence.createTrack();
 
             midiFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), filename);
-            fileIntent = new Intent(Intent.ACTION_VIEW, Uri.fromFile(midiFile));
 
             generate_music();
 
@@ -102,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
             sequencer.setTempoInBPM(bpm);
 
             MidiSystem.write(sequence, 1, midiFile);
-            startActivity(fileIntent);
+            startActivity(new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
         } catch(Exception e) {
             e.printStackTrace();
         }
