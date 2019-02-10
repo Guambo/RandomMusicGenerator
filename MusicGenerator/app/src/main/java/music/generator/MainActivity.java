@@ -10,8 +10,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 // import javax.sound.midi.*;
 import android.widget.TextView;
 import jp.kshoji.javax.sound.midi.*;
@@ -40,8 +42,17 @@ public class MainActivity extends AppCompatActivity {
 
         GUI();
     }
-
+    // TODO: Add dropdown menu for user input (https://developer.android.com/guide/topics/ui/controls/spinner#java)
     public void GUI() {
+        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.keys, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spinner.setAdapter(adapter);
+
         mButton = findViewById(R.id.button);
         mButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -57,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
                 filename = mEdit[2].getText().toString() + ".mid";
 
                 tv = findViewById(R.id.textView);
-                tv.setText("Generated file \"MyFiles/Internal Storage/Download/" + filename + "\"");
+                tv.setText("Generated file \"MyFiles/Internal Storage/Download/" + filename + "\""); // TODO: add a 'go to' button
 
                 // generate_music(custom_inputs[0], etc...);
                 // Need to guard against bad input
@@ -145,5 +156,6 @@ public class MainActivity extends AppCompatActivity {
                 retval[i] = 1;
             }
         }
+        return null; // REMOVE BEFORE PULLING
     }
 }
