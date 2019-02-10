@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mButton;
     private TextView tv;
     private int MAX_INPUTS = 3;
-    private int numNotes;
+    private int bpm;
     private String key;
     private String filename;
     private File midiFile;
@@ -51,19 +51,17 @@ public class MainActivity extends AppCompatActivity {
                 mEdit[1] = findViewById(R.id.editText2);
                 mEdit[2] = findViewById(R.id.editText3);
 
-                numNotes = Integer.valueOf(mEdit[0].getText().toString());
+                bpm = Integer.valueOf(mEdit[0].getText().toString());
                 key = mEdit[1].getText().toString();
                 filename = mEdit[2].getText().toString() + ".mid";
 
                 tv = findViewById(R.id.textView);
-                tv.setText("Number of Notes: " + numNotes +
-                        "\nKey: " + key +
-                        "\nGenerated file \"MyFiles/Internal Storage/Download/" + filename + "\"");
+                tv.setText("Generated file \"MyFiles/Internal Storage/Download/" + filename + "\"");
 
                 // generate_music(custom_inputs[0], etc...);
                 // Need to guard against bad input
                 // Also may be a good idea to create a new thread and have that thread run the setupAndPlay function
-                setupAndPlay(numNotes);
+                setupAndPlay(15);
             }
         });
     }
@@ -91,14 +89,14 @@ public class MainActivity extends AppCompatActivity {
             }
 
             sequencer.setSequence(sequence);
-            sequencer.setTempoInBPM(220);
+            sequencer.setTempoInBPM(bpm);
             MidiSystem.write(sequence, 1, midiFile);
-            sequencer.start();
+            //sequencer.start();
 
-            while(sequencer.isRunning()) {
-                ;
-            }
-            sequencer.close();
+            //while(sequencer.isRunning()) {
+            //    ;
+            //}
+            //sequencer.close();
         } catch(Exception e) {
             e.printStackTrace();
         }
