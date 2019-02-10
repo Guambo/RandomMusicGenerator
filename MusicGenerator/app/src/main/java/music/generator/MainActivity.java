@@ -23,6 +23,7 @@ import jp.kshoji.javax.sound.midi.*;
 import java.io.File;
 import java.util.Random;
 
+// TODO: @Matt Add content URI (https://medium.com/@ali.muzaffar/what-is-android-os-fileuriexposedexception-and-what-you-can-do-about-it-70b9eb17c6d0)
 public class MainActivity extends AppCompatActivity {
     // Fields
     private EditText mEdit[];
@@ -46,7 +47,9 @@ public class MainActivity extends AppCompatActivity {
 
         GUI();
     }
-    // TODO: Add dropdown menu for user input (https://developer.android.com/guide/topics/ui/controls/spinner#java)
+    // TODO: @Nick Add dropdown menu for user input AND store usr input (https://developer.android.com/guide/topics/ui/controls/spinner#java)
+    // User input values: Key, Time Signature, Checkbox for producing 1. Melody 2. Bass
+    // 3. Include seventh chords XOR Include major third 4. Include minor fourth 5. Include long chord progression
     public void GUI() {
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -118,6 +121,8 @@ public class MainActivity extends AppCompatActivity {
 
         return event;
     }
+
+    // TODO: @David make very long chord progressions
     public void generate_music() {
         int barR = ((int) Math.random() * 8) + 2;
         int numOfChords = (int)((Math.random()*12) - 2);
