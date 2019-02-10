@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import jp.kshoji.javax.sound.midi.*;
 import java.io.File;
+import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity {
     // Fields
@@ -114,5 +115,35 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return event;
+    }
+    public void generate_music() {
+        //int[] numOfChords = new int[(int)((Math.random()*12) - 2)];
+        int barR = ((int) Math.random() * 8) + 2;
+        int[] numOfChords = new int[(int)((Math.random()*12) - 2)];
+        int key = (int) Math.random()*11;
+        int tempo = (int) Math.random()*60 + 100;
+        int[][] chords = {
+                {0, 4, 7},
+                {2, 5, 9},
+                {4, 7, 11},
+                {4, 8, 11},
+                {5, 9, 0},
+                {5, 8, 0},
+                {7, 11, 2},
+                {9, 0, 4},
+                {11, 2, 5}
+        };
+
+
+
+    }
+    public int[] rhythm(int rLength, int percentage)//makes a rhythm for a certain part. rLength is the bar length, percentage is the chance for a higher frequency of notes
+    {
+        int[] retval = new int[rLength];
+        for(int i = 0; i < rLength; i++) {
+            if (Math.random() * 100 > percentage) {
+                retval[i] = 1;
+            }
+        }
     }
 }
