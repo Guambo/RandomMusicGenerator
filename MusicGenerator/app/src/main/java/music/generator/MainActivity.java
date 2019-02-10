@@ -7,12 +7,15 @@ package music.generator;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 // import javax.sound.midi.*;
 import android.widget.TextView;
 import jp.kshoji.javax.sound.midi.*;
+import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
     // Fields
@@ -21,8 +24,11 @@ public class MainActivity extends AppCompatActivity {
     private TextView tv;
     private int MAX_INPUTS = 3;
     private int custom_input[];
+    private File midiFile;
 
-    public Sequencer sequencer;
+    private Sequencer sequencer;
+    private Sequence sequence;
+    private Track track;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,15 +70,11 @@ public class MainActivity extends AppCompatActivity {
         try {
             sequencer = MidiSystem.getSequencer();
             sequencer.open();
+            midiFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "test.mid");
 
-            Sequence sequence = new Sequence(Sequence.PPQ, 4);
+            sequence = new Sequence(Sequence.PPQ, 4);
 
-            Track track = sequence.createTrack();
-
-            Synthesizer synthesizer = MidiSystem.getSynthesizer();
-            synthesizer.open();
-
-            sequencer.getTransmitter().setReceiver(synthesizer.getReceiver());
+            track = sequence.createTrack();
 
             /* The following block is what populates the track with notes.
                This is what we will replace with our randomization and theory logic!
@@ -88,19 +90,12 @@ public class MainActivity extends AppCompatActivity {
 
             sequencer.setSequence(sequence);
             sequencer.setTempoInBPM(220);
+            MidiSystem.write(sequence, 1, midiFile);
             sequencer.start();
 
-//            while (sequencer.isRunning()) {
-//                if (!sequencer.isRunning()) {
-//                    sequencer.close();
-//                    //System.exit(1);
-//                    break;
-//                }
-//            }
             while(sequencer.isRunning()) {
                 ;
             }
-            synthesizer.close();
             sequencer.close();
         } catch(Exception e) {
             e.printStackTrace();
@@ -120,9 +115,4 @@ public class MainActivity extends AppCompatActivity {
 
         return event;
     }
-
-   // public void generate_music(.....) {
-        // This is where the music generation
-        // logic occurs
-   // }
 }
