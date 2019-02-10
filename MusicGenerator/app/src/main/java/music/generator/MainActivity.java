@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
     // TODO: @David make very long chord progressions
     public void generate_music() {
         int barR = ((int) Math.random() * 8) + 2;
-        int numOfChords = (int)((Math.random()*12) - 2);
+        int numOfChords = (int)(Math.random()*100);
         int key = (int) Math.random()*11;
         int tempo = (int) Math.random()*60 + 100;
         int upperBound = 5;
@@ -152,23 +152,23 @@ public class MainActivity extends AppCompatActivity {
         int[][] chordProg = new int[numOfChords][4];
         for(int i = 0; i < numOfChords ; i++)
         {
-            chordProg[i] = seventh[(int) Math.random()*seventh.length];
+            chordProg[i] = seventh[(int) (Math.random()*seventh.length)];
         }
-        int [] bassRhythm = rhythm(barR, 90);
+        int [] bassRhythm = rhythm(barR, 40);
         int [] cRhythm = rhythm(barR, 50);
         int [] offRhythm = rhythm(barR, 10);
         int [] bassNotes;
         for (int i = 0; i < numOfChords; i ++) {
 
             // note on
-            bassNotes = generateNotes(lowerBound, upperBound, barR, key, chordProg[i] , (int) Math.random()*3);
+            bassNotes = generateNotes(lowerBound-2, upperBound-1, barR, key, chordProg[i] , (int) (Math.random()*3));
             for(int j = 0; j<barR;j++){
                 if(bassRhythm[j]==1)
                 {
-                    track.add(makeEvent(144, 1, bassNotes[j], 100, i * 4 + j * 4));
+                    track.add(makeEvent(144, 1, bassNotes[j], 100, i * barR * 4 + j * 4));
                 }
                 else{
-                    track.add(makeEvent(128, 1, bassNotes[j], 100, i * 4 + j * 4));
+                    track.add(makeEvent(128, 1, 100, 100, i * barR * 4 + j * 4));
                 }
                 //track.add(makeEvent(144, 1, i, 100, i));
                 //track.add(makeEvent(144, 1, i, 100, i));
@@ -193,8 +193,11 @@ public class MainActivity extends AppCompatActivity {
     {
         int[] retval = new int[rLength];
         for(int i = 0; i < rLength; i++) {
-            if (Math.random() * 100 < percentage) {
+            if ((int)(Math.random()* 100) < percentage) {
                 retval[i] = 1;
+            }
+            else{
+                retval[i] = 0;
             }
         }
         return retval;
