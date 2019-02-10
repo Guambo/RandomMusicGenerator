@@ -1,5 +1,5 @@
 /*
- Authors: David J Martinez, Mathew Aber, & Nicholas Vallejos
+ Authors: David J Martinez, Matthew Aber, & Nicholas Vallejos
  HackBU 2019
  Helpful GUI Links: https://developer.android.com/training/constraint-layout/
 */
@@ -69,6 +69,11 @@ public class MainActivity extends AppCompatActivity {
 
             Track track = sequence.createTrack();
 
+            Synthesizer synthesizer = MidiSystem.getSynthesizer();
+            synthesizer.open();
+
+            sequencer.getTransmitter().setReceiver(synthesizer.getReceiver());
+
             /* The following block is what populates the track with notes.
                This is what we will replace with our randomization and theory logic!
                ੭•̀ω•́)੭̸*✩⁺˚
@@ -95,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
             while(sequencer.isRunning()) {
                 ;
             }
+            synthesizer.close();
             sequencer.close();
         } catch(Exception e) {
             e.printStackTrace();
