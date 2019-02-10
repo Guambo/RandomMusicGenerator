@@ -2,6 +2,7 @@
  Authors: David J Martinez, Matthew Aber, & Nicholas Vallejos
  HackBU 2019
  Helpful GUI Links: https://developer.android.com/training/constraint-layout/
+ ੭•̀ω•́)੭̸*✩⁺˚
 */
 package music.generator;
 
@@ -14,8 +15,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-// import javax.sound.midi.*;
 import android.widget.TextView;
+import android.net.Uri;
+import android.content.Intent;
+
 import jp.kshoji.javax.sound.midi.*;
 import java.io.File;
 import java.util.Random;
@@ -34,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private Sequencer sequencer;
     private Sequence sequence;
     private Track track;
+    private Intent fileIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,34 +86,20 @@ public class MainActivity extends AppCompatActivity {
         try {
             sequencer = MidiSystem.getSequencer();
             sequencer.open();
-            midiFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), filename);
 
             sequence = new Sequence(Sequence.PPQ, 4);
-
             track = sequence.createTrack();
 
-            /* The following block is what populates the track with notes.
-               This is what we will replace with our randomization and theory logic!
-               ੭•̀ω•́)੭̸*✩⁺˚
-             */
+            midiFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), filename);
+            fileIntent = new Intent(Intent.ACTION_VIEW, Uri.fromFile(midiFile));
+
             generate_music();
-//            for (int i = 0; i < (4 * numNotes) + 5; i += 4) {
-//                // note on
-//                track.add(makeEvent(144, 1, i, 100, i));
-//
-//                // note off
-//                track.add(makeEvent(128, 1, i, 100, i + 2));
-//            }
 
             sequencer.setSequence(sequence);
             sequencer.setTempoInBPM(bpm);
-            MidiSystem.write(sequence, 1, midiFile);
-            //sequencer.start();
 
-            //while(sequencer.isRunning()) {
-            //    ;
-            //}
-            //sequencer.close();
+            MidiSystem.write(sequence, 1, midiFile);
+            startActivity(fileIntent);
         } catch(Exception e) {
             e.printStackTrace();
         }
